@@ -8,12 +8,17 @@ These instructions will allow you to get informations directly from jira to save
 
 ### TODO
 
-*Get your private Token for jria from https://id.atlassian.com/manage/api-tokens
-*Create file ``creds.txt`` in your git repo dir.
-*It should looks like 
+* Get your private Token for jria from https://id.atlassian.com/manage/api-tokens
+* Create file ``creds.txt`` in your git repo dir.
+* It should looks like 
 ```
 username:TOKEN
 ```
-### Next Patch
+* Create file ``config.yaml`` in your git repo dir.
+* It should looks like
+```
+https://jira server
+```
+### Last Patch
 
-*def of sprint.
+* Added auto sprint detection
