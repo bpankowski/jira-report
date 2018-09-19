@@ -19,6 +19,12 @@ username:TOKEN
 ```
 https://jira server
 ```
-### Last Patch
+### Last Patches
 
 * Added auto sprint detection
+* Putted Raport Generator into function
+* Added check of fresh sprint
+
+### Next to do
+
+* Have to add possibility of adding Done jobs from last 2 days of past sprint.
