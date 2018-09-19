@@ -8,23 +8,40 @@ import re
 
 def get_list(sprint):
     query_string = ('project=JD and status="Done" and Sprint="' + sprint +'"')
+    old_sprint = (int(sprint)-1)
+    query_strin_old_sprint = ('project=JD and status="Done" and Sprint="' + str(old_sprint) +'"')
     done = jira.search_issues(query_string)
+    done_old_sprint = jira.search_issues(query_strin_old_sprint)
     print ('Done')
     file = open("output.txt", "w")
     file.write('Done \n')
     for x in done:
-        # update_date = x.raw['fields']['updated']
-        # update_date = update_date.split('.', 1)[0]
-        # then = datetime.strptime(update_date, "%Y-%m-%dT%H:%M:%S")
-        # if then > datetime.now() - timedelta(days = 7):
+        if x.raw['fields']['assignee']is None:
+            output = (x.raw['fields']['summary']+'.')
+
+            file.write(output.encode('utf-8') + '\n')            
+        else:            
+            output = (x.raw['fields']['summary'] +' '+ x.raw['fields']['assignee']['displayName']+'.')
+           
+            file.write(output.encode('utf-8') + '\n')
+
+    for x in done_old_sprint:
+        update_date = x.raw['fields']['updated']
+        update_date = update_date.split('.', 1)[0]
+        then = datetime.strptime(update_date, "%Y-%m-%dT%H:%M:%S")
+        # print(then > datetime.now() - timedelta(days = 7))
+        # print(then)
+        # print(datetime.now() - timedelta(days = 7))
+        if then > datetime.now() - timedelta(days = 7):
             if x.raw['fields']['assignee']is None:
                 output = (x.raw['fields']['summary'])
 
                 file.write(output.encode('utf-8') + '\n')
             else:            
                 output = (x.raw['fields']['summary'] +' '+ x.raw['fields']['assignee']['displayName'])
-                # print (x.raw['fields'])
+
                 file.write(output.encode('utf-8') + '\n')
+
     query_string = ('project=JD and status="In progress" and Sprint="' + sprint +'"')
     inprogress = jira.search_issues(query_string)
     print ('In progress')
@@ -35,11 +52,19 @@ def get_list(sprint):
         # then = datetime.strptime(update_date, "%Y-%m-%dT%H:%M:%S")
         # if then > datetime.now() - timedelta(days = 7):
             if x.raw['fields']['assignee']is None:
-                output = (x.raw['fields']['summary'])
-
+                if len(x.fields.customfield_10010) > 1:
+                    opened = 'This task was included in '+ str(len(x.fields.customfield_10010)) + ' sprints.'
+                else:
+                    opened = ''  
+                output = (x.raw['fields']['summary']+'. '+ opened)
                 file.write(output.encode('utf-8') + "\n")
-            else:            
-                output = (x.raw['fields']['summary'] +' '+ x.raw['fields']['assignee']['displayName'])
+            else:
+                if len(x.fields.customfield_10010) > 1:
+                    opened = 'This task was included in '+ str(len(x.fields.customfield_10010)) + ' sprints.'
+                else:
+                    opened = ''
+
+                output = (x.raw['fields']['summary'] +' '+ x.raw['fields']['assignee']['displayName']+ '. ' + opened)
 
                 file.write(output.encode('utf-8') + "\n")
 
@@ -53,11 +78,20 @@ def get_list(sprint):
         # then = datetime.strptime(update_date, "%Y-%m-%dT%H:%M:%S")
         # if then > datetime.now() - timedelta(days = 7):
             if x.raw['fields']['assignee']is None:
-                output = (x.raw['fields']['summary'])
-
+                if len(x.fields.customfield_10010) > 1:
+                    opened = 'This task was included in '+ str(len(x.fields.customfield_10010)) + ' sprints.'
+                else:
+                    opened = ''
+                output = (x.raw['fields']['summary']+'. '+ opened)
+                
                 file.write(output.encode('utf-8') + "\n")
-            else:            
-                output = (x.raw['fields']['summary'] +' '+ x.raw['fields']['assignee']['displayName'])
+            else:
+                if len(x.fields.customfield_10010) > 1:
+                    opened = 'This task was included in '+ str(len(x.fields.customfield_10010)) + ' sprints.'
+                else:
+                    opened = ''
+
+                output = (x.raw['fields']['summary'] +' '+ x.raw['fields']['assignee']['displayName']+ '. ' + opened)
 
                 file.write(output.encode('utf-8') + "\n")
     file.close()
@@ -72,7 +106,7 @@ for username,password in creds:
             'server': server
             }
 jira = JIRA(options, basic_auth = (username, password))
-check_sprint = jira.search_issues('project=JD and status="To do" and Sprint="Sprint 13"')
+check_sprint = jira.search_issues('project=JD and status="In progress"')
 sprint = ''
 status = ''
 empty_list = []
@@ -80,52 +114,24 @@ empty_list = []
 for x in check_sprint:
     # print(x.fields.customfield_10010[0])
     # print (x.fields.customfield_10010[0] is not empty_list)
-    if x.fields.customfield_10010 is not empty_list: 
+    if x.fields.customfield_10010 is not empty_list:        
         if status is '':
-            for y in range(0,3):
+            length = len(x.fields.customfield_10010)
+            for y in range(0,length):
                 if x.fields.customfield_10010[y] != []:
                     # print (x.fields.customfield_10010)
                     check2 = x.fields.customfield_10010[y]
                     check3 = '['+check2.split('[')[1] 
-                    result = re.search('state=(.*),', check3)    
+                    result = re.search('state=(.*),', check3)
                     status = result.group(1).split(',')[0]
-        
+
                     if status == 'ACTIVE':
-                        if sprint is '':     
-                            sprint_str = (check3.split('name=')[1])
+                        if sprint is '':
+                            sprint_str = (check3.split('name=Sprint ')[1])
                             sprint = sprint_str.split(',')[0]
-                            print (sprint)
+
                             get_list(sprint)
                             print ('Job done brah.')
-                            exit()
-                            # return ('job done.')
-        # else:             
-        #     raise Exception('01100101 01110010 01110010 01101111 01110010')
-    # elif x.fields.customfield_10010[1] is not empty_list: 
-    #     if status is '':
-    #         print (x.fields.customfield_10010)
-    #         check2 = x.fields.customfield_10010[1]
-    #         check3 = '['+check2.split('[')[1] 
-    #         result = re.search('state=(.*),', check3)    
-    #         status = result.group(1).split(',')[0]
-        
-    #         if status == 'ACTIVE':
-    #             if sprint is '':     
-    #                 sprint_str = (check3.split('name=')[1])
-    #                 sprint = sprint_str.split(',')[0]
-    #                 print (sprint)
-    # elif x.fields.customfield_10010[2] is not empty_list: 
-    #     print 
-    #     if status is '':
-    #         print (x.fields.customfield_10010)
-    #         check2 = x.fields.customfield_10010[2]
-    #         check3 = '['+check2.split('[')[1] 
-    #         result = re.search('state=(.*),', check3)    
-    #         status = result.group(1).split(',')[0]
-        
-    #         if status == 'ACTIVE':
-    #             if sprint is '':     
-    #                 sprint_str = (check3.split('name=')[1])
-    #                 sprint = sprint_str.split(',')[0]
-    #                 print (sprint)
 
+                            exit()
+                           

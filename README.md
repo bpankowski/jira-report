@@ -24,7 +24,9 @@ https://jira server
 * Added auto sprint detection
 * Putted Raport Generator into function
 * Added check of fresh sprint
+* Added pull of last two days of previous sprint to the section Done
+* Added indication of tasks that were included in more than one sprint
 
 ### Next to do
 
-* Have to add possibility of adding Done jobs from last 2 days of past sprint.
+* 
