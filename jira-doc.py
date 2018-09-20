@@ -13,7 +13,7 @@ def get_list(sprint):
     done = jira.search_issues(query_string)
     done_old_sprint = jira.search_issues(query_strin_old_sprint)
     print ('Done')
-    file = open("output.txt", "w")
+    file = open("Report-"+str(datetime.now())+".txt", "w")
     file.write('Done \n')
     for x in done:
         if x.raw['fields']['assignee']is None:

@@ -6,7 +6,7 @@ Python script which is pulling data from Jira.
 
 These instructions will allow you to get informations directly from jira to save your time while filling up report next time.
 
-### TODO
+### Installation
 
 * Get your private Token for jria from https://id.atlassian.com/manage/api-tokens
 * Create file ``creds.txt`` in your git repo dir.
