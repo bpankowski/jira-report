@@ -29,4 +29,4 @@ https://jira server
 
 ### Next to do
 
-* 
+* Have to add requirements.txt file to the project. 
