@@ -26,6 +26,7 @@ https://jira server
 * Added check of fresh sprint
 * Added pull of last two days of previous sprint to the section Done
 * Added indication of tasks that were included in more than one sprint
+* Changed name of the output file to Report+date, now archiving process will be much more easier.
 
 ### Next to do
 
