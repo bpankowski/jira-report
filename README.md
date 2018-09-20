@@ -19,6 +19,12 @@ username:TOKEN
 ```
 https://jira server
 ```
+* Install packages from requirements.txt file
+```
+pip install -r requirements.txt 
+```
+* Python version - ``2.7.15rc1``
+
 ### Last Patches
 
 * Added auto sprint detection
@@ -27,7 +33,8 @@ https://jira server
 * Added pull of last two days of previous sprint to the section Done
 * Added indication of tasks that were included in more than one sprint
 * Changed name of the output file to Report+date, now archiving process will be much more easier.
+* Added requirements.txt file to the project
 
 ### Next to do
 
-* Have to add requirements.txt file to the project. 
+* 
